@@ -13,7 +13,7 @@ build:
 	docker build -t $(DOCKER_TAG) .
 
 push:
-	gcloud builds submit --tag $(DOCKER_TAG) --tag $(DOCKER_TAG)
+	gcloud builds submit --tag $(DOCKER_TAG)
 
 deploy:
 	gcloud run deploy $(APP) --image $(DOCKER_TAG) --platform managed --region $(REGION)
