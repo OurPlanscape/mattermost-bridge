@@ -69,5 +69,5 @@ async def forward_notification(incident: Dict[str, Any]) -> None:
     data = {**destination, "text": text}
     async with httpx.AsyncClient() as client:
         response = await client.post(url, json=data)
-        log.info(response.status_code)
-        log.info(response.json())
+        if response.status_code != 200:
+            log.error(f"Something went wrong while talking to {url}")
