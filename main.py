@@ -24,7 +24,7 @@ async def webhook(request: Request):
     if not authenticate(auth_token):
         return Response(status_code=401)
 
-    data = request.json()
+    data = await request.json()
 
     log.info(f"webhook payload: {data}")
 
