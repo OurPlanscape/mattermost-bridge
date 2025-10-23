@@ -41,7 +41,8 @@ def get_destination(incident: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     try:
         return DESTINATION_TREE[application][env]
     except KeyError:
-        return None
+        # this configuration for just to test things
+        return DESTINATION_TREE["planscape"]["dev"]
 
 
 def build_text(incident: Dict[str, Any]) -> str:
@@ -55,11 +56,12 @@ Hello from bridge!
 
 async def forward_notification(incident: Dict[str, Any]) -> None:
     incident = adict(incident)
-    destination = get_destination(incident) or {}
+    destination = get_destination(incident)
     if not destination:
         log.warning(
             f"Could not establish destination for tags {incident.resource.labels}."  # noqa
         )
+        return
 
     hook_id = destination.pop("hook_id")  # type: ignore
     url = build_url(hook_id)
