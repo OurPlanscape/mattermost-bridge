@@ -1,0 +1,13 @@
+version: 2
+secret:
+  ignored_paths:
+    - "tests/*"
+    - "**/README.md"
+    - "doc/*"
+    - "docker-compose.yml"
+    - ".env.sample"
+    - "**/.env-sample"
+    - "**/.sample.env"
+    - ".github/workflows/*"
+  ignored_detectors:
+    - Generic Password
