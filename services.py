@@ -93,7 +93,7 @@ def get_origin(data: Dict[str, Any]) -> str:
     match data:
         case {"incident": incident}:  # noqa: F841
             return "GCP"
-        case {"data": {"issue": issue}}:  # noqa: F841
+        case {"event": event}:  # noqa: F841
             return "SENTRY"
         case _:
             raise ValueError("cannot determine origin from data")
