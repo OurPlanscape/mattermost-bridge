@@ -1,0 +1,574 @@
+import pytest
+from addict import Dict as adict
+
+from services import (
+    build_mm_payload,
+    get_application_env,
+    get_formatter,
+    get_hook,
+    get_origin,
+    get_payload,
+)
+
+SENTRY_FAKE_PAYLOAD = {
+    "id": "826",
+    "project": "planscape",
+    "project_name": "planscape",
+    "project_slug": "planscape",
+    "logger": None,
+    "level": "error",
+    "culprit": "raven.scripts.runner in main",
+    "message": "This is an example Python exception",
+    "url": "https://sentry.sig-gis.com/organizations/sig/issues/826/?referrer=webhooks_plugin",
+    "triggering_rules": [],
+    "event": {
+        "event_id": "b84378e97e3148e68c5e350273e8a9b0",
+        "level": "error",
+        "version": "5",
+        "type": "default",
+        "logentry": {
+            "formatted": "This is an example Python exception",
+            "message": None,
+            "params": None,
+        },
+        "logger": "",
+        "modules": {"my.package": "1.0.0"},
+        "platform": "python",
+        "timestamp": 1761584723.226,
+        "received": 1761584783.234205,
+        "environment": "prod",
+        "user": {
+            "id": "1",
+            "email": "sentry@example.com",
+            "ip_address": "127.0.0.1",
+            "username": "sentry",
+            "name": "Sentry",
+            "sentry_user": "id:1",
+            "geo": {"country_code": "GB", "city": "London", "region": "H9"},
+        },
+        "request": {
+            "url": "http://example.com/foo",
+            "method": "GET",
+            "data": {"hello": "world"},
+            "query_string": [["foo", "bar"]],
+            "cookies": [["foo", "bar"], ["biz", "baz"]],
+            "headers": [
+                ["Content-Type", "application/json"],
+                ["Referer", "http://example.com"],
+                [
+                    "User-Agent",
+                    "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.72 Safari/537.36",
+                ],
+            ],
+            "env": {"ENV": "prod"},
+            "inferred_content_type": "application/json",
+            "api_target": None,
+            "fragment": None,
+        },
+        "contexts": {
+            "browser": {
+                "browser": "Chrome 28.0.1500",
+                "name": "Chrome",
+                "version": "28.0.1500",
+                "type": "browser",
+            },
+            "client_os": {
+                "os": "Windows 8",
+                "name": "Windows",
+                "version": "8",
+                "type": "os",
+            },
+        },
+        "stacktrace": {
+            "frames": [
+                {
+                    "function": "build_msg",
+                    "module": "raven.base",
+                    "filename": "raven/base.py",
+                    "abs_path": "/home/ubuntu/.virtualenvs/getsentry/src/raven/raven/base.py",
+                    "lineno": 303,
+                    "pre_context": [
+                        "                frames = stack",
+                        "",
+                        "            data.update({",
+                        "                'sentry.interfaces.Stacktrace': {",
+                        "                    'frames': get_stack_info(frames,",
+                    ],
+                    "context_line": "                        transformer=self.transform)",
+                    "post_context": [
+                        "                },",
+                        "            })",
+                        "",
+                        "        if 'sentry.interfaces.Stacktrace' in data:",
+                        "            if self.include_paths:",
+                    ],
+                    "in_app": False,
+                    "vars": {
+                        "'culprit'": None,
+                        "'data'": {
+                            "'message'": "u'This is a test message generated using ``raven test``'",
+                            "'sentry.interfaces.Message'": {
+                                "'message'": "u'This is a test message generated using ``raven test``'",
+                                "'params'": [],
+                            },
+                        },
+                        "'date'": "datetime.datetime(2013, 8, 13, 3, 8, 24, 880386)",
+                        "'event_id'": "'54a322436e1b47b88e239b78998ae742'",
+                        "'event_type'": "'raven.events.Message'",
+                        "'extra'": {
+                            "'go_deeper'": [
+                                ["{\"'bar'\":[\"'baz'\"],\"'foo'\":\"'bar'\"}"]
+                            ],
+                            "'loadavg'": [0.37255859375, 0.5341796875, 0.62939453125],
+                            "'user'": "'dcramer'",
+                        },
+                        "'frames'": "<generator object iter_stack_frames at 0x107bcc3c0>",
+                        "'handler'": "<raven.events.Message object at 0x107bd0890>",
+                        "'k'": "'sentry.interfaces.Message'",
+                        "'kwargs'": {
+                            "'level'": 20,
+                            "'message'": "'This is a test message generated using ``raven test``'",
+                        },
+                        "'public_key'": None,
+                        "'result'": {
+                            "'message'": "u'This is a test message generated using ``raven test``'",
+                            "'sentry.interfaces.Message'": {
+                                "'message'": "u'This is a test message generated using ``raven test``'",
+                                "'params'": [],
+                            },
+                        },
+                        "'self'": "<raven.base.Client object at 0x107bb8210>",
+                        "'stack'": True,
+                        "'tags'": None,
+                        "'time_spent'": None,
+                        "'v'": {
+                            "'message'": "u'This is a test message generated using ``raven test``'",
+                            "'params'": [],
+                        },
+                    },
+                    "colno": None,
+                    "data": None,
+                    "errors": None,
+                    "raw_function": None,
+                    "image_addr": None,
+                    "instruction_addr": None,
+                    "addr_mode": None,
+                    "package": None,
+                    "platform": None,
+                    "source_link": None,
+                    "symbol": None,
+                    "symbol_addr": None,
+                    "trust": None,
+                    "lock": None,
+                },
+                {
+                    "function": "capture",
+                    "module": "raven.base",
+                    "filename": "raven/base.py",
+                    "abs_path": "/home/ubuntu/.virtualenvs/getsentry/src/raven/raven/base.py",
+                    "lineno": 459,
+                    "pre_context": [
+                        "        if not self.is_enabled():",
+                        "            return",
+                        "",
+                        "        data = self.build_msg(",
+                        "            event_type, data, date, time_spent, extra, stack, tags=tags,",
+                    ],
+                    "context_line": "            **kwargs)",
+                    "post_context": [
+                        "",
+                        "        self.send(**data)",
+                        "",
+                        "        return (data.get('event_id'),)",
+                        "",
+                    ],
+                    "in_app": False,
+                    "vars": {
+                        "'data'": None,
+                        "'date'": None,
+                        "'event_type'": "'raven.events.Message'",
+                        "'extra'": {
+                            "'go_deeper'": [
+                                ["{\"'bar'\":[\"'baz'\"],\"'foo'\":\"'bar'\"}"]
+                            ],
+                            "'loadavg'": [0.37255859375, 0.5341796875, 0.62939453125],
+                            "'user'": "'dcramer'",
+                        },
+                        "'kwargs'": {
+                            "'level'": 20,
+                            "'message'": "'This is a test message generated using ``raven test``'",
+                        },
+                        "'self'": "<raven.base.Client object at 0x107bb8210>",
+                        "'stack'": True,
+                        "'tags'": None,
+                        "'time_spent'": None,
+                    },
+                    "colno": None,
+                    "data": None,
+                    "errors": None,
+                    "raw_function": None,
+                    "image_addr": None,
+                    "instruction_addr": None,
+                    "addr_mode": None,
+                    "package": None,
+                    "platform": None,
+                    "source_link": None,
+                    "symbol": None,
+                    "symbol_addr": None,
+                    "trust": None,
+                    "lock": None,
+                },
+                {
+                    "function": "captureMessage",
+                    "module": "raven.base",
+                    "filename": "raven/base.py",
+                    "abs_path": "/home/ubuntu/.virtualenvs/getsentry/src/raven/raven/base.py",
+                    "lineno": 577,
+                    "pre_context": [
+                        '        """',
+                        "        Creates an event from ``message``.",
+                        "",
+                        "        >>> client.captureMessage('My event just happened!')",
+                        '        """',
+                    ],
+                    "context_line": "        return self.capture('raven.events.Message', message=message, **kwargs)",
+                    "post_context": [
+                        "",
+                        "    def captureException(self, exc_info=None, **kwargs):",
+                        '        """',
+                        "        Creates an event from an exception.",
+                        "",
+                    ],
+                    "in_app": False,
+                    "vars": {
+                        "'kwargs'": {
+                            "'data'": None,
+                            "'extra'": {
+                                "'go_deeper'": [
+                                    "[{\"'bar'\":[\"'baz'\"],\"'foo'\":\"'bar'\"}]"
+                                ],
+                                "'loadavg'": [
+                                    0.37255859375,
+                                    0.5341796875,
+                                    0.62939453125,
+                                ],
+                                "'user'": "'dcramer'",
+                            },
+                            "'level'": 20,
+                            "'stack'": True,
+                            "'tags'": None,
+                        },
+                        "'message'": "'This is a test message generated using ``raven test``'",
+                        "'self'": "<raven.base.Client object at 0x107bb8210>",
+                    },
+                    "colno": None,
+                    "data": None,
+                    "errors": None,
+                    "raw_function": None,
+                    "image_addr": None,
+                    "instruction_addr": None,
+                    "addr_mode": None,
+                    "package": None,
+                    "platform": None,
+                    "source_link": None,
+                    "symbol": None,
+                    "symbol_addr": None,
+                    "trust": None,
+                    "lock": None,
+                },
+                {
+                    "function": "send_test_message",
+                    "module": "raven.scripts.runner",
+                    "filename": "raven/scripts/runner.py",
+                    "abs_path": "/home/ubuntu/.virtualenvs/getsentry/src/raven/raven/scripts/runner.py",
+                    "lineno": 77,
+                    "pre_context": [
+                        "        level=logging.INFO,",
+                        "        stack=True,",
+                        "        tags=options.get('tags', {}),",
+                        "        extra={",
+                        "            'user': get_uid(),",
+                    ],
+                    "context_line": "            'loadavg': get_loadavg(),",
+                    "post_context": [
+                        "        },",
+                        "    ))",
+                        "",
+                        "    if client.state.did_fail():",
+                        "        print('error!')",
+                    ],
+                    "in_app": False,
+                    "vars": {
+                        "'client'": "<raven.base.Client object at 0x107bb8210>",
+                        "'data'": None,
+                        "'k'": "'secret_key'",
+                        "'options'": {"'data'": None, "'tags'": None},
+                    },
+                    "colno": None,
+                    "data": None,
+                    "errors": None,
+                    "raw_function": None,
+                    "image_addr": None,
+                    "instruction_addr": None,
+                    "addr_mode": None,
+                    "package": None,
+                    "platform": None,
+                    "source_link": None,
+                    "symbol": None,
+                    "symbol_addr": None,
+                    "trust": None,
+                    "lock": None,
+                },
+                {
+                    "function": "main",
+                    "module": "raven.scripts.runner",
+                    "filename": "raven/scripts/runner.py",
+                    "abs_path": "/home/ubuntu/.virtualenvs/getsentry/src/raven/raven/scripts/runner.py",
+                    "lineno": 112,
+                    "pre_context": [
+                        '    print("Using DSN configuration:")',
+                        '    print(" ", dsn)',
+                        "    print()",
+                        "",
+                        "    client = Client(dsn, include_paths=['raven'])",
+                    ],
+                    "context_line": "    send_test_message(client, opts.__dict__)",
+                    "in_app": False,
+                    "vars": {
+                        "'args'": [
+                            "'test'",
+                            "'https://ebc35f33e151401f9deac549978bda11:f3403f81e12e4c24942d505f086b2cad@sentry.io/1'",
+                        ],
+                        "'client'": "<raven.base.Client object at 0x107bb8210>",
+                        "'dsn'": "'https://ebc35f33e151401f9deac549978bda11:f3403f81e12e4c24942d505f086b2cad@sentry.io/1'",
+                        "'opts'": "<Values at 0x107ba3b00: {'data': None, 'tags': None}>",
+                        "'parser'": "<optparse.OptionParser instance at 0x107ba3368>",
+                        "'root'": "<logging.Logger object at 0x107ba5b10>",
+                    },
+                    "colno": None,
+                    "data": None,
+                    "errors": None,
+                    "raw_function": None,
+                    "image_addr": None,
+                    "instruction_addr": None,
+                    "addr_mode": None,
+                    "package": None,
+                    "platform": None,
+                    "post_context": None,
+                    "source_link": None,
+                    "symbol": None,
+                    "symbol_addr": None,
+                    "trust": None,
+                    "lock": None,
+                },
+            ]
+        },
+        "tags": [
+            ["browser", "Chrome 28.0.1500"],
+            ["browser.name", "Chrome"],
+            ["client_os", "Windows 8"],
+            ["client_os.name", "Windows"],
+            ["environment", "prod"],
+            ["level", "error"],
+            ["sentry:user", "id:1"],
+            ["server_name", "web01.example.org"],
+            ["url", "http://example.com/foo"],
+        ],
+        "extra": {
+            "emptyList": [],
+            "emptyMap": {},
+            "length": 10837790,
+            "results": [1, 2, 3, 4, 5],
+            "session": {"foo": "bar"},
+            "unauthorized": False,
+            "url": "http://example.org/foo/bar/",
+        },
+        "grouping_config": {
+            "id": "newstyle:2023-01-11",
+            "enhancements": "KLUv_SAYwQAAkwKRs25ld3N0eWxlOjIwMjMtMDEtMTGQ",
+        },
+        "metadata": {
+            "title": "This is an example Python exception",
+            "in_app_frame_mix": "system-only",
+        },
+        "fingerprint": ["{{ default }}"],
+        "hashes": ["3a2b45089d0211943e5a6645fb4cea3f"],
+        "culprit": "raven.scripts.runner in main",
+        "title": "This is an example Python exception",
+        "location": None,
+        "_ref": 2,
+        "_ref_version": 2,
+        "_metrics": {"bytes.stored.event": 8330},
+        "nodestore_insert": 1761584783.58181,
+        "id": "b84378e97e3148e68c5e350273e8a9b0",
+    },
+}
+
+FAKE_PAYLOAD = {
+    "version": "test",
+    "incident": {
+        "incident_id": "12345",
+        "scoping_project_id": "12345",
+        "scoping_project_number": 12345,
+        "url": "http: //www.example.com",
+        "started_at": 0,
+        "ended_at": 0,
+        "state": "OPEN",
+        "summary": "Test Incident",
+        "apigee_url": "http://www.example.com",
+        "observed_value": "1.0",
+        "resource": {
+            "type": "example_resource",
+            "labels": {"application": "planscape", "env": "dev"},
+        },
+        "resource_type_display_name": "Example Resource Type",
+        "resource_id": "12345",
+        "resource_display_name": "Example Resource",
+        "resource_name": "projects/12345/example_resources/12345",
+        "metric": {
+            "type": "test.googleapis.com/metric",
+            "displayName": "Test Metric",
+            "labels": {"example": "label"},
+        },
+        "metadata": {
+            "system_labels": {"example": "label"},
+            "user_labels": {"example": "label"},
+        },
+        "policy_name": "projects/12345/alertPolicies/12345",
+        "policy_user_labels": {"example": "label"},
+        "documentation": "Test documentation",
+        "condition": {
+            "name": "projects/12345/alertPolicies/12345/conditions/12345",
+            "displayName": "Example condition",
+            "conditionThreshold": {
+                "filter": 'metric.type="test.googleapis.com/metric" resource.type="example_resource"',
+                "comparison": "COMPARISON_GT",
+                "thresholdValue": 0.5,
+                "duration": "0s",
+                "trigger": {"count": 1},
+            },
+        },
+        "condition_name": "Example condition",
+        "threshold_value": "0.5",
+    },
+}
+
+
+class TestGetFormatters:
+    def test_get_formatter_gcp(self):
+        formatter = get_formatter("GCP", "ERROR")
+        data = {"foo": "bar"}
+        text = formatter(data)
+        assert formatter is not None
+        assert text.startswith("[GCP ERROR]")
+
+    def test_get_formatter_sentry(self):
+        formatter = get_formatter("SENTRY", "ERROR")
+        data = {"foo": "bar"}
+        text = formatter(data)
+        assert formatter is not None
+        assert text.startswith("[SENTRY ERROR]")
+
+    def test_get_formatter_error_bad_origin(self):
+        formatter = get_formatter("BOLINHA", "ERROR")
+        data = {"foo": "bar"}
+        text = formatter(data)
+        assert formatter is not None
+        assert text.startswith("[GENERIC UNKNOWN]")
+
+    def test_get_formatter_error_bad_type(self):
+        formatter = get_formatter("SENTRY", "BOLINHA")
+        data = {"foo": "bar"}
+        text = formatter(data)
+        assert formatter is not None
+        assert text.startswith("[GENERIC UNKNOWN]")
+
+
+class TestGetPayload:
+    def test_get_payload_known(self):
+        payload = get_payload("planscape", "production")
+        assert payload is not None
+
+    def test_get_payload_unknown_application(self):
+        payload = get_payload("nonexistent_app", "production")
+        assert payload is not None
+
+    def test_get_payload_unknown_env(self):
+        payload = get_payload("planscape", "nonexistent_env")
+        assert payload is not None
+
+    def test_get_payload_unknown_both(self):
+        payload = get_payload("no_app", "no_env")
+        assert payload is not None
+
+
+class TestGetHook:
+    def test_get_hook_known(self, mocker):
+        fake_hooks = {
+            "planscape": {
+                "dev": "hook-dev",
+                "production": "hook-prod",
+            }
+        }
+        mocker.patch("services.HOOKS", fake_hooks)
+        hook = get_hook("planscape", "production")
+        assert hook == "hook-prod"
+
+    def test_get_hook_unknown_application_returns_default_dev(self, mocker):
+        fake_hooks = {
+            "planscape": {
+                "dev": "hook-dev",
+            }
+        }
+        mocker.patch("services.HOOKS", fake_hooks)
+        hook = get_hook("no-app", "production")
+        assert hook == "hook-dev"
+
+    def test_get_hook_unknown_env_returns_default_dev(self, mocker):
+        fake_hooks = {
+            "planscape": {
+                "dev": "hook-dev",
+            }
+        }
+        mocker.patch("services.HOOKS", fake_hooks)
+        hook = get_hook("planscape", "no-env")
+        assert hook == "hook-dev"
+
+
+class TestGetOrigin:
+    def test_get_sentry_origin(self):
+        payload = {"event": {"foo": "bar"}}
+        origin = get_origin(payload)
+        assert origin == "SENTRY"
+
+    def test_get_gcp_origin(self):
+        payload = {"incident": {"foo": "bar"}}
+        origin = get_origin(payload)
+        assert origin == "GCP"
+
+    def test_get_unknown_origin(self):
+        payload = {"whatever": {"foo": "bar"}}
+        with pytest.raises(ValueError):
+            get_origin(payload)
+
+
+class TestBuildMMPPayload:
+    def test_build_mm_payload_merges_and_creates_text_key(self):
+        mm_payload = build_mm_payload(
+            data={"foo": "bar"},
+            base_payload={"foo": "bar"},
+            formatter=str,
+        )
+        assert "text" in mm_payload
+
+
+class TestGetApplicationEnv:
+    def test_payload_returns_application_env_gcp(self):
+        appl, env = get_application_env(adict(FAKE_PAYLOAD))
+        assert appl == "planscape"
+        assert env == "dev"
+
+    def test_payload_returns_application_env_sentry(self):
+        appl, env = get_application_env(adict(SENTRY_FAKE_PAYLOAD))
+        assert appl == "planscape"
+        assert env == "dev"
