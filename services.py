@@ -129,6 +129,7 @@ def get_application_env(data: Dict[str, Any]) -> Tuple[str, str]:
 async def forward_notification(data: Dict[str, Any]) -> None:
     data = adict(data)
     origin = get_origin(data)
+    log.info(f"payload {data}")
     webhook_type = get_type(data)
     application, env = get_application_env(data)
     hook = get_hook(application, env)
