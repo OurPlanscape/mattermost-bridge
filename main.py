@@ -26,5 +26,5 @@ async def webhook(request: Request):
         return Response(status_code=401)
 
     data = await request.json()
-    await forward_notification(data.get("incident"))
+    await forward_notification(data)
     return Response(status_code=200)
