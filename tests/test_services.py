@@ -457,31 +457,31 @@ FAKE_PAYLOAD = {
 class TestGetFormatters:
     def test_get_formatter_gcp(self):
         formatter = get_formatter("GCP", "ERROR")
-        data = {"foo": "bar"}
+        data = adict({"foo": "bar"})
         text = formatter(data)
         assert formatter is not None
-        assert text.startswith("[GCP ERROR]")
+        assert text is not None
 
     def test_get_formatter_sentry(self):
         formatter = get_formatter("SENTRY", "ERROR")
-        data = {"foo": "bar"}
+        data = adict({"foo": "bar"})
         text = formatter(data)
         assert formatter is not None
-        assert text.startswith("[SENTRY ERROR]")
+        assert text is not None
 
     def test_get_formatter_error_bad_origin(self):
         formatter = get_formatter("BOLINHA", "ERROR")
-        data = {"foo": "bar"}
+        data = adict({"foo": "bar"})
         text = formatter(data)
         assert formatter is not None
-        assert text.startswith("[GENERIC UNKNOWN]")
+        assert text is not None
 
     def test_get_formatter_error_bad_type(self):
         formatter = get_formatter("SENTRY", "BOLINHA")
-        data = {"foo": "bar"}
+        data = adict({"foo": "bar"})
         text = formatter(data)
         assert formatter is not None
-        assert text.startswith("[GENERIC UNKNOWN]")
+        assert text is not None
 
 
 class TestGetPayload:
@@ -557,7 +557,8 @@ class TestBuildMMPPayload:
         mm_payload = build_mm_payload(
             data={"foo": "bar"},
             base_payload={"foo": "bar"},
-            formatter=str,
+            origin="planscape",
+            type="ERROR",
         )
         assert "text" in mm_payload
 

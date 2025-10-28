@@ -35,20 +35,44 @@ DEFAULT_PAYLOAD = {
 }
 
 
-def format_text_generic(data: Dict[str, Any]) -> str:
-    return f"""[GENERIC UNKNOWN]
+def format_text_generic(data: adict) -> str:
+    return f"""
 ```
 {data}
 ```
 """
 
 
-def format_text_for_gcp_error(data: Dict[str, Any]) -> str:
-    return f"[GCP ERROR] {format_text_generic(data)}"
+def format_text_for_gcp_error(data: adict) -> str:
+    project = data.incident.resource_display_name
+    resource_id = data.incident.resource_name
+    title = data.incident.summary
+    error_link = data.incident.url
+    env = data.incident.resource.env
+    return f"""| Key         | Value                           |
+|--------------|-------------------------------- |
+| Project      | {project}                       |
+| resource ID  | {resource_id}                   |
+| Title        | {title}                         |
+| Environemnt  | {env}                           |
+| Error        | {error_link}                    |
+"""
 
 
-def format_text_for_sentry_error(data: Dict[str, Any]) -> str:
-    return f"[SENTRY ERROR] {format_text_generic(data)}"
+def format_text_for_sentry_error(data: adict) -> str:
+    project = data.project
+    title = data.event.title
+    env = data.event.environment
+    error_link = data.url
+    message = data.message
+    return f"""| Key         | Value                           |
+|--------------|-------------------------------- |
+| Project      | {project}                       |
+| Title        | {title}                         |
+| Environemnt  | {env}                           |
+| Error        | {error_link}                    |
+| Message      | {message}                       |
+"""
 
 
 FORMATTERS = {
@@ -101,9 +125,16 @@ def get_origin(data: Dict[str, Any]) -> str:
 def build_mm_payload(
     data: Dict[str, Any],
     base_payload: Dict[str, Any],
-    formatter=format_text_generic,
+    origin: str,
+    type: str,
 ) -> Dict[str, Any]:
-    text = formatter(data)
+    formatter = get_formatter(origin, type)
+    custom_text = formatter(data)
+    text = f"""#### :ohno: {type} detected at {origin}
+
+
+{custom_text}
+"""
     return {**base_payload, "text": text}
 
 
