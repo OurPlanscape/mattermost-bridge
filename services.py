@@ -163,7 +163,7 @@ def get_application_env(data: adict) -> Tuple[str, str]:
             application = labels.application
             env = labels.env
 
-            if application is None or env is None:
+            if not application or not env:
                 # this is not an incident, its an error
                 application = "planscape"
                 env = get_gcp_env_from_data(data)
