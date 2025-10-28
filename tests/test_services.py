@@ -404,7 +404,30 @@ SENTRY_FAKE_PAYLOAD = {
     },
 }
 
-FAKE_PAYLOAD = {
+GCP_ERROR_FAKE_PAYLOAD = {
+    "version": "1.0",
+    "subject": "Resolved error has reoccurred in planscape-23d66 mattermost-bridge-production mattermost-bridge-production-00005-jqp",
+    "group_info": {
+        "project_id": "planscape-23d66",
+        "detail_link": "https://console.cloud.google.com/errors/detail/CICfrqbv1pSnoQE;locations=global;time=P30D?project=planscape-23d66&utm_source=error-reporting-notification&utm_medium=webhook&utm_content=resolved-error",
+    },
+    "exception_info": {
+        "type": "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "message": "",
+    },
+    "event_info": {
+        "log_message": 'Traceback (most recent call last):\n  File "/app/.venv/lib/python3.13/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi\n    result = await app(  # type: ignore[func-returns-value]\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^',
+        "request_method": "",
+        "request_url": "",
+        "referrer": "",
+        "user_agent": "",
+        "service": "mattermost-bridge-production",
+        "version": "mattermost-bridge-production-00005-jqp",
+        "response_status": "0",
+    },
+}
+
+GCP_INCIDENT_FAKE_PAYLOAD = {
     "version": "test",
     "incident": {
         "incident_id": "12345",
@@ -565,7 +588,7 @@ class TestBuildMMPPayload:
 
 class TestGetApplicationEnv:
     def test_payload_returns_application_env_gcp(self):
-        appl, env = get_application_env(adict(FAKE_PAYLOAD))
+        appl, env = get_application_env(adict(GCP_INCIDENT_FAKE_PAYLOAD))
         assert appl == "planscape"
         assert env == "dev"
 

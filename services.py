@@ -44,11 +44,11 @@ def format_text_generic(data: adict) -> str:
 
 
 def format_text_for_gcp_error(data: adict) -> str:
-    project = data.incident.resource_display_name
-    resource_id = data.incident.resource_name
-    title = data.incident.summary
-    error_link = f"[Link]({data.incident.url})"
-    env = data.incident.resource.env
+    project = data.event_info.service
+    resource_id = data.event_info.version
+    title = data.subject
+    error_link = f"[Link]({data.group_info.detail_link})"
+    env = get_gcp_env_from_data(data)
     return f"""| Key         | Value                           |
 |--------------|-------------------------------- |
 | Project      | {project}                       |
@@ -116,6 +116,8 @@ def get_origin(data: Dict[str, Any]) -> str:
     match data:
         case {"incident": incident}:  # noqa: F841
             return "GCP"
+        case {"event_info": event_info}:  # noqa: F841
+            return "GCP"
         case {"event": event}:  # noqa: F841
             return "SENTRY"
         case _:
@@ -142,6 +144,17 @@ def get_type(data: Dict[str, Any]) -> str:
     return "ERROR"
 
 
+def get_gcp_env_from_data(data: adict) -> str:
+    service = data.event_info.service
+    env = "dev"
+    if "production" in service:
+        env = "production"
+    if "staging" in service:
+        env = "staging"
+
+    return env
+
+
 def get_application_env(data: adict) -> Tuple[str, str]:
     origin = get_origin(data)
     match origin:
@@ -149,6 +162,11 @@ def get_application_env(data: adict) -> Tuple[str, str]:
             labels = data.incident.resource.labels  # type: ignore
             application = labels.application
             env = labels.env
+
+            if application is None or env is None:
+                # this is not an incident, its an error
+                application = "planscape"
+                env = get_gcp_env_from_data(data)
         case "SENTRY":
             application = data.project_slug
             env = data.event.environment
