@@ -52,10 +52,10 @@ def format_text_for_gcp_error(data: adict) -> str:
     return f"""| Key         | Value                           |
 |--------------|-------------------------------- |
 | Project      | {project}                       |
-| resource ID  | {resource_id}                   |
-| Title        | {title}                         |
+| Resource ID  | {resource_id}                   |
 | Environment  | {env}                           |
 | Error        | {error_link}                    |
+| Title        | {title}                         |
 """
 
 
@@ -68,9 +68,9 @@ def format_text_for_sentry_error(data: adict) -> str:
     return f"""| Key         | Value                           |
 |--------------|-------------------------------- |
 | Project      | {project}                       |
-| Title        | {title}                         |
 | Environment  | {env}                           |
 | Error        | {error_link}                    |
+| Title        | {title}                         |
 | Message      | {message}                       |
 """
 
