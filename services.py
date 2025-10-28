@@ -47,7 +47,7 @@ def format_text_for_gcp_error(data: adict) -> str:
     project = data.incident.resource_display_name
     resource_id = data.incident.resource_name
     title = data.incident.summary
-    error_link = data.incident.url
+    error_link = f"[Link]({data.incident.url})"
     env = data.incident.resource.env
     return f"""| Key         | Value                           |
 |--------------|-------------------------------- |
@@ -63,7 +63,7 @@ def format_text_for_sentry_error(data: adict) -> str:
     project = data.project
     title = data.event.title
     env = data.event.environment
-    error_link = data.url
+    error_link = f"[Link]({data.url})"
     message = data.message
     return f"""| Key         | Value                           |
 |--------------|-------------------------------- |
