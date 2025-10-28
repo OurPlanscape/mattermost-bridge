@@ -54,7 +54,7 @@ def format_text_for_gcp_error(data: adict) -> str:
 | Project      | {project}                       |
 | resource ID  | {resource_id}                   |
 | Title        | {title}                         |
-| Environemnt  | {env}                           |
+| Environment  | {env}                           |
 | Error        | {error_link}                    |
 """
 
@@ -69,7 +69,7 @@ def format_text_for_sentry_error(data: adict) -> str:
 |--------------|-------------------------------- |
 | Project      | {project}                       |
 | Title        | {title}                         |
-| Environemnt  | {env}                           |
+| Environment  | {env}                           |
 | Error        | {error_link}                    |
 | Message      | {message}                       |
 """
