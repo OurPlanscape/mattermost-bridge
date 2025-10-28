@@ -142,18 +142,19 @@ def get_type(data: Dict[str, Any]) -> str:
     return "ERROR"
 
 
-def get_application_env(data: Dict[str, Any]) -> Tuple[str, str]:
+def get_application_env(data: adict) -> Tuple[str, str]:
     origin = get_origin(data)
     match origin:
         case "GCP":
             labels = data.incident.resource.labels  # type: ignore
             application = labels.application
             env = labels.env
-            return (application, env)
         case "SENTRY":
-            return ("planscape", "dev")
+            application = data.project_slug
+            env = data.event.environment
         case _:
             raise ValueError("Cannot obtain application, env pair from data")
+    return (application, env)
 
 
 async def forward_notification(data: Dict[str, Any]) -> None:
