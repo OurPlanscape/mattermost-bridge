@@ -167,12 +167,12 @@ async def forward_notification(data: Dict[str, Any]) -> None:
     if not hook:
         log.warning("Could not get hook for payload.")
         return
-    formatter = get_formatter(origin, webhook_type)
     url = build_url(hook)
     payload = build_mm_payload(
         data=data,
         base_payload=base_payload,
-        formatter=formatter,
+        origin=origin,
+        type=webhook_type,
     )
     await push(url, payload)
 
