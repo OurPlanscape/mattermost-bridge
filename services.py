@@ -47,15 +47,15 @@ def format_text_for_gcp_error(data: adict) -> str:
     project = data.incident.resource_display_name
     resource_id = data.incident.resource_name
     title = data.incident.summary
-    error_link = data.incident.url
+    error_link = f"[Link]({data.incident.url})"
     env = data.incident.resource.env
     return f"""| Key         | Value                           |
 |--------------|-------------------------------- |
 | Project      | {project}                       |
-| resource ID  | {resource_id}                   |
-| Title        | {title}                         |
-| Environemnt  | {env}                           |
+| Resource ID  | {resource_id}                   |
+| Environment  | {env}                           |
 | Error        | {error_link}                    |
+| Title        | {title}                         |
 """
 
 
@@ -63,14 +63,14 @@ def format_text_for_sentry_error(data: adict) -> str:
     project = data.project
     title = data.event.title
     env = data.event.environment
-    error_link = data.url
+    error_link = f"[Link]({data.url})"
     message = data.message
     return f"""| Key         | Value                           |
 |--------------|-------------------------------- |
 | Project      | {project}                       |
-| Title        | {title}                         |
-| Environemnt  | {env}                           |
+| Environment  | {env}                           |
 | Error        | {error_link}                    |
+| Title        | {title}                         |
 | Message      | {message}                       |
 """
 
@@ -142,18 +142,19 @@ def get_type(data: Dict[str, Any]) -> str:
     return "ERROR"
 
 
-def get_application_env(data: Dict[str, Any]) -> Tuple[str, str]:
+def get_application_env(data: adict) -> Tuple[str, str]:
     origin = get_origin(data)
     match origin:
         case "GCP":
             labels = data.incident.resource.labels  # type: ignore
             application = labels.application
             env = labels.env
-            return (application, env)
         case "SENTRY":
-            return ("planscape", "dev")
+            application = data.project_slug
+            env = data.event.environment
         case _:
             raise ValueError("Cannot obtain application, env pair from data")
+    return (application, env)
 
 
 async def forward_notification(data: Dict[str, Any]) -> None:

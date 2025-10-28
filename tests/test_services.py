@@ -572,4 +572,4 @@ class TestGetApplicationEnv:
     def test_payload_returns_application_env_sentry(self):
         appl, env = get_application_env(adict(SENTRY_FAKE_PAYLOAD))
         assert appl == "planscape"
-        assert env == "dev"
+        assert env == "prod"
