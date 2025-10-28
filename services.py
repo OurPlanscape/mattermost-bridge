@@ -36,8 +36,7 @@ DEFAULT_PAYLOAD = {
 
 
 def format_text_generic(data: Dict[str, Any]) -> str:
-    return f"""
-Hello from bridge!
+    return f"""[GENERIC UNKNOWN]
 ```
 {data}
 ```
@@ -54,10 +53,10 @@ def format_text_for_sentry_error(data: Dict[str, Any]) -> str:
 
 FORMATTERS = {
     "GCP": {
-        "error": format_text_for_gcp_error,
+        "ERROR": format_text_for_gcp_error,
     },
     "SENTRY": {
-        "error": format_text_for_sentry_error,
+        "ERROR": format_text_for_sentry_error,
     },
 }
 
@@ -115,7 +114,7 @@ def get_type(data: Dict[str, Any]) -> str:
 def get_application_env(data: Dict[str, Any]) -> Tuple[str, str]:
     origin = get_origin(data)
     match origin:
-        case "GPC":
+        case "GCP":
             labels = data.incident.resource.labels  # type: ignore
             application = labels.application
             env = labels.env
