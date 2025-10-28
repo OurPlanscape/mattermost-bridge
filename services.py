@@ -181,6 +181,13 @@ async def forward_notification(data: Dict[str, Any]) -> None:
     origin = get_origin(data)
     webhook_type = get_type(data)
     application, env = get_application_env(data)
+    log.info(
+        "ORIGIN %s, APP %s, ENV %s, TYPE %s",
+        origin,
+        application,
+        env,
+        webhook_type,
+    )
     hook = get_hook(application, env)
     base_payload = get_payload(application, env)
     if not hook:
