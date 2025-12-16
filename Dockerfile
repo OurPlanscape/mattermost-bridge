@@ -10,7 +10,8 @@ ENV DEBIAN_FRONTEND=noninteractive
 ADD . /app
 WORKDIR /app
 RUN uv sync --locked --no-install-project --dev
+RUN uv run opentelemetry-bootstrap --action=install
 
 
 EXPOSE 8000
-CMD ["uv", "run", "fastapi", "run", "--host", "0.0.0.0"]
+CMD ["uv", "run", "opentelemetry-instrument", "fastapi", "run", "--host", "0.0.0.0"]
