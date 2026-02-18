@@ -14,6 +14,7 @@ HOOKS = {
         "dev": settings.planscape_webhook_dev,
         "staging": settings.planscape_webhook_dev,
         "production": settings.planscape_webhook_production,
+        "catalog": settings.planscape_webhook_production,
     }
 }
 
@@ -26,6 +27,10 @@ DEFAULT_PAYLOAD = {
         "staging": {
             "username": "Bridge",
             "channel": "planscape-alerts-dev",
+        },
+        "catalog": {
+            "username": "Bridge",
+            "channel": "planscape-alerts-production",
         },
         "production": {
             "username": "Bridge",
@@ -149,6 +154,8 @@ def get_gcp_env_from_data(data: adict) -> str:
     env = "dev"
     if "production" in service:
         env = "production"
+    if "catalog" in service:
+        env = "catalog"
     if "staging" in service:
         env = "staging"
 
