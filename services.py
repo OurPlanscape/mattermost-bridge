@@ -14,7 +14,7 @@ HOOKS = {
         "dev": settings.planscape_webhook_dev,
         "staging": settings.planscape_webhook_dev,
         "production": settings.planscape_webhook_production,
-        "catalog": settings.planscape_webhook_production,
+        "catalog": settings.planscape_webhook_dev,
     }
 }
 
@@ -30,7 +30,7 @@ DEFAULT_PAYLOAD = {
         },
         "catalog": {
             "username": "Bridge",
-            "channel": "planscape-alerts-production",
+            "channel": "planscape-alerts-dev",
         },
         "production": {
             "username": "Bridge",
