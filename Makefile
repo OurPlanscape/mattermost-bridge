@@ -10,15 +10,24 @@ DOCKER_TAG=us-central1-docker.pkg.dev/$(PROJECT)/$(DOCKER_REPO)/$(APP_NAME):$(VE
 REGION=us-central1
 
 build:
+	@BUILDS=$$(gcloud builds list --filter="images:$(DOCKER_TAG)" --format=json); \
+	if [ "$$BUILDS" = "[]" ]; then \
+		echo "Building image with tag $(DOCKER_TAG).";\
+		docker build -t $(DOCKER_TAG) .;\
+	else \
+		echo "Docker image already pushed to artifact repo (tag: $(DOCKER_TAG))";\
+	fi;
+
+build-force:
 	docker build -t $(DOCKER_TAG) .
 
 push:
 	@BUILDS=$$(gcloud builds list --filter="images:$(DOCKER_TAG)" --format=json); \
 	if [ "$$BUILDS" = "[]" ]; then \
-		echo "Pushing version $(VERSION) ."; \
+		echo "Pushing image $(DOCKER_TAG) ."; \
 		gcloud builds submit --tag $(DOCKER_TAG);\
 	else \
-		echo "Version already submitted"; \
+		echo "Image $(DOCKER_TAG) already submitted"; \
 	fi;
 
 deploy:
