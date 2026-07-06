@@ -4,7 +4,7 @@ PROJECT=planscape-23d66
 APP_NAME=mattermost-bridge
 ENV=dev
 VERSION="$$(git log -1 --format="%at" | xargs -I{} date -d @{} +%Y.%m.%d)-$$(git log --abbrev=10 --format=%h | head -1)"
-APP=$(APP_NAME)
+APP=$(APP_NAME)-$(ENV)
 DOCKER_REPO=planscape-$(APP_NAME)
 DOCKER_TAG=us-central1-docker.pkg.dev/$(PROJECT)/$(DOCKER_REPO)/$(APP_NAME):$(VERSION)
 REGION=us-central1
